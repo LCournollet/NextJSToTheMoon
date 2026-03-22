@@ -1,13 +1,12 @@
 import WebsiteHeader from "@/components/ui/WebsiteHeader";
-import { WebsiteType } from "@/types/Website";
+import { createClient } from "@/prismicio";
 
 export async function generateStaticParams() {
-  const websites = await fetch("http://localhost:3000/websites.json").then(
-    (res) => res.json(),
-  );
+  const client = createClient();
+  const websites = await client.getAllByType("website");
 
-  return websites.map((w: WebsiteType) => ({
-    slug: w.slug,
+  return websites.map((w) => ({
+    slug: w.uid,
   }));
 }
 
@@ -19,13 +18,10 @@ type WebsitePageType = {
 
 export default async function WebsitePage({ params }: WebsitePageType) {
   const { slug } = await params;
-  const websites: WebsiteType[] = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/websites.json`,
-  ).then((res) => res.json());
-  const currentWebsite = websites.find((w: WebsiteType) => w.slug == slug);
-  console.log("currentWebsite: ", currentWebsite);
+  const client = createClient();
+  const website = await client.getByUID("website", slug);
 
   return (
-    <main>{currentWebsite && <WebsiteHeader website={currentWebsite} />}</main>
+    <main><WebsiteHeader website={website} /></main>
   );
 }

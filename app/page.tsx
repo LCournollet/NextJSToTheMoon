@@ -3,12 +3,14 @@ import Title from "@/components/ui/Title";
 import Video from "@/components/ui/Video";
 import Website from "@/components/ui/Website";
 import WebsiteHeader from "@/components/ui/WebsiteHeader";
-import { WebsiteType } from "@/types/Website";
+import { createClient } from "@/prismicio";
 
 export default async function HomePage() {
-  const websites: WebsiteType[] = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/websites.json`,
-  ).then((res) => res.json());
+  const client = createClient();
+  const websites = await client.getAllByType("website", {
+    limit: 4,
+    orderings: [{ field: "document.first_publication_date", direction: "desc" }],
+  });
 
   return (
     <main>

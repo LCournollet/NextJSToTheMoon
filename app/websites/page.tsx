@@ -1,11 +1,12 @@
 import Title from "@/components/ui/Title";
-import { WebsiteType } from "@/types/Website";
+import { createClient } from "@/prismicio";
 import WebsitesList from "./_components/WebsitesList";
 
 export default async function WebsitesPage() {
-  const websites: WebsiteType[] = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/websites.json`,
-  ).then((res) => res.json());
+  const client = createClient();
+  const websites = await client.getAllByType("website", {
+    orderings: [{ field: "document.first_publication_date", direction: "desc" }],
+  });
 
   return (
     <main className="px-6 py-12">

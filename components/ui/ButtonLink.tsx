@@ -5,6 +5,7 @@ type ButtonLinkType = {
   href: string;
   variant?: "filled" | "outline" | "link";
   color?: "light" | "dark";
+  target?: string;
   children: React.ReactNode;
 };
 
@@ -25,11 +26,13 @@ export function ButtonLink({
   href,
   variant = "filled",
   color = "dark",
+  target,
   children,
 }: ButtonLinkType) {
   return (
     <Link
       href={href}
+      target={target}
       className={clsx(
         buttonClasses[color][variant],
         "px-4 py-3 font-bold flex items-center",
